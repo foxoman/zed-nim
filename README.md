@@ -9,3 +9,5 @@ Nim support for Zed Editor
 - inlay hint
 - run and build task
 - some syntax coloring issues
+- custom format options
+- Config options 
