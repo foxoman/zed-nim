@@ -5,7 +5,7 @@ edition = "2021"
 publish = false
 license = "Apache-2.0"
 authors = ["Foxoman <sultan@foxoman.net>"]
-description = "Zed extension adding Nim spell checking and style checking."
+description = "Zed extension adding Nim Support"
 keywords = ["zed", "nim"]
 categories = ["development-tools"]
 
