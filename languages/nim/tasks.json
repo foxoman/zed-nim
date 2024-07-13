@@ -1,0 +1,23 @@
+[
+  {
+    "label": "Run Nim",
+    "command": "nim",
+    "args": ["c", "-r", "$ZED_FILE"],
+    "use_new_terminal": false,
+    "reveal": "always"
+  },
+    {
+    "label": "Nimble Run",
+    "command": "nimble",
+    "args": ["run"],
+    "use_new_terminal": false,
+    "reveal": "always"
+  },
+      {
+    "label": "Nimble Build",
+    "command": "nimble",
+    "args": ["build"],
+    "use_new_terminal": false,
+    "reveal": "always"
+  }
+]
