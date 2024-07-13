@@ -20,7 +20,10 @@ Support for current file run, nimble run, nimble build
 
 ![image](https://github.com/user-attachments/assets/e8b3d664-8753-43f6-b690-6140471a2a17)
 
-
+## Other supported features:
+- Go to definition and type definition
+- Rename
+- Hover
 
 # Formating Configuration
 
@@ -42,4 +45,7 @@ To use nph as a formatter, add this to your settings
 # Need to fix:
 - Auto indent
 - some syntax coloring issues
-- Config options 
+- Project Config options
+- Add runnable
+- Debug Task
+- Macro Development 
