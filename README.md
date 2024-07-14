@@ -5,15 +5,15 @@ Nim support for Zed Editor
 - Language Server Support: https://github.com/nim-lang/langserver
 
 # Install
-If you are reading this after the extenstion been includedin the Zed store then find it in the store by seaching for nim and install it.
+If you are reading this after the extension has been included in the Zed store then find it in the store by searching for nim and installing it.
 
 ## For Dev / Manual install
 
 - Download the release source
-- Extract it in a folder
-- Go to the extnestion page in Zed and click opn Install Dev Extenstion
+- Extract it into a folder
+- Go to the extension page in Zed and click on Install Dev Extension
 ![image](https://github.com/user-attachments/assets/5ce69399-e1b2-4b5c-8e9e-93a952c9977d)
-- Wait for a time till it build and you will see nim extnestion installed
+- Wait for a time till it builds and you will see nim extension installed
 ![image](https://github.com/user-attachments/assets/88d7622c-f799-40d9-8c0a-1d99d2529197)
 
 
