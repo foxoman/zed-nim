@@ -19,6 +19,8 @@ tab_size = 2
 
 increase_indent_pattern = "^(if|proc|else|elif|when)|^(let|const|var)$"
 
+decrease_indent_pattern = "^(  )$"
+
 [overrides.element]
 line_comments = ["#"]
 block_comment = ["#[ ", " ]#"]
