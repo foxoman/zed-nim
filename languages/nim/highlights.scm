@@ -425,7 +425,7 @@
   "enum"
   "object"
   "type"
-] @keyword.type
+] @keyword;.type
 
 ; =============================================================================
 ; @keyword.function    ; keywords that define a function (e.g. `func` in Go, `def` in Python)
