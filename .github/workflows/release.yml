@@ -11,6 +11,6 @@ jobs:
       - uses: huacnlee/zed-extension-action@v1.0.0
         with:
           extension-name: nim
-          push-to: huacnlee/zed-extensions
+          push-to: foxoman/extensions
         env:
           COMMITTER_TOKEN: ${{ secrets.COMMITTER_TOKEN }}
