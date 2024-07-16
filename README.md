@@ -1,5 +1,5 @@
 # zed-nim
-Nim support for Zed Editor
+Nim extension for Zed Editor v0.0.2
 
 - Tree-Sitter Support: https://github.com/alaviss/tree-sitter-nim
 - Language Server Support: https://github.com/nim-lang/langserver
@@ -61,9 +61,8 @@ To use nph as a formatter, add this to your settings
 ```
 
 # Need to fix:
-- Auto indent
-- some syntax coloring issues
 - Project Config options
 - Add runnable
 - Debug Task
-- Macro Development 
+- Macro Development
+- code snippets 
