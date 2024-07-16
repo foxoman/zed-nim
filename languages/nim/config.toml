@@ -19,7 +19,7 @@ tab_size = 2
 
 increase_indent_pattern = "^(proc|macro|if|else|elif|when)|^(let|const|var)$"
 
-decrease_indent_pattern = "^(  {2,})$"
+decrease_indent_pattern = "^( {2,})$"
 
 [overrides.element]
 line_comments = ["#"]
