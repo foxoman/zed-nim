@@ -2,7 +2,6 @@ name = "Nim"
 code_fence_block_name = "nim"
 grammar = "nim"
 path_suffixes = ["nim", "nims", "nimble", "nim.cfg"]
-first_line_pattern = '^#!.*\bnode\b'
 
 autoclose_before = ";:.,=}])>"
 brackets = [
