@@ -5,10 +5,10 @@ on:
 
 jobs:
   homebrew:
-    name: Release Zed Extension
+    name: bump-zed-extension
     runs-on: ubuntu-latest
     steps:
-      - uses: huacnlee/zed-extension-action@v1
+      - uses: huacnlee/zed-extension-action@v1.0.0
         with:
           extension-name: nim
           push-to: huacnlee/zed-extensions
