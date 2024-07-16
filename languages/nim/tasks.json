@@ -1,6 +1,6 @@
 [
   {
-    "label": "Run Nim",
+    "label": "Run Current Nim File",
     "command": "nim",
     "args": ["c", "-r", "$ZED_FILE"],
     "use_new_terminal": false,
@@ -13,10 +13,17 @@
     "use_new_terminal": false,
     "reveal": "always"
   },
-      {
+  {
     "label": "Nimble Build",
     "command": "nimble",
     "args": ["build"],
+    "use_new_terminal": false,
+    "reveal": "always"
+  },
+  {
+    "label": "Nimble Test",
+    "command": "nimble",
+    "args": ["test"],
     "use_new_terminal": false,
     "reveal": "always"
   }
