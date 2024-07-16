@@ -3,7 +3,9 @@ code_fence_block_name = "nim"
 grammar = "nim"
 path_suffixes = ["nim", "nims", "nimble", "nim.cfg"]
 
+
 autoclose_before = ";:.,=}])>"
+
 brackets = [
     { start = "{", end = "}", close = true, newline = true },
     { start = "[", end = "]", close = true, newline = true },
@@ -15,11 +17,10 @@ brackets = [
     { start = "/*", end = "*/", close = true, newline = true, not_in = ["comment", "string"] },
 ]
 tab_size = 2
-
-increase_indent_pattern = ":$|^ {0,}(if|proc|macro|else|elif|when)|^(let|const|var)$"
-
-decrease_indent_pattern = "^ {2,}$"
+increase_indent_pattern = ":\\s*$|=\\s*$|^\\s*(if|else|elif|case|of|while|for|block|proc|func|method|iterator|macro|template|type|when)\\b"
+decrease_indent_pattern = "^\\s*(else|elif|of|except|finally)\\b"
 
 [overrides.element]
 line_comments = ["#"]
 block_comment = ["#[ ", " ]#"]
+comment_continuation = { insert = "# " }
