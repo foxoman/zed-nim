@@ -5,7 +5,7 @@ Nim extension for Zed Editor v0.0.2
 - Language Server Support: https://github.com/nim-lang/langserver
 
 # Install,
-Nim support is officially added to zed editor via this extension, Search the zed extension by searching for nim and installing it.
+Nim support has been officially integrated into the Zed editor through this extension. To enable it, search for "Nim" in the Zed extensions and install it.
 
 ![image](https://github.com/user-attachments/assets/11009e16-1c61-49a7-a9eb-77d3aaeb9724)
 
@@ -29,7 +29,7 @@ Nim support is officially added to zed editor via this extension, Search the zed
 ![image](https://github.com/user-attachments/assets/ae2e1a14-f923-4b8b-b1b5-1515b9e55697)
 
 ## Tasks
-Support for current file run, nimble run, nimble build
+Support for current file run, nimble run, nimble build, nimble test
 
 ![image](https://github.com/user-attachments/assets/7ae1b533-daef-4ecd-8896-1cbf663ba22a)
 
@@ -60,9 +60,9 @@ To use nph as a formatter, add this to your settings
   }
 ```
 
-# Need to fix:
-- Project Config options
-- Add runnable
-- Debug Task
-- Macro Development
-- code snippets 
+## To-Do List for Project:
+- Fix Project Config options
+- Add runnable functionality
+- Implement Debug Task
+- Develop Macros
+- Create code snippets
