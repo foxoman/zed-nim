@@ -2,20 +2,19 @@ name = "Nim"
 code_fence_block_name = "nim"
 grammar = "nim"
 path_suffixes = ["nim"]
-
-
 autoclose_before = ";:.,=}])>"
 
 brackets = [
     { start = "{", end = "}", close = true, newline = true },
     { start = "[", end = "]", close = true, newline = true },
     { start = "(", end = ")", close = true, newline = true },
-    { start = "<", end = ">", close = false, newline = true, not_in = ["comment", "string"] },
     { start = "\"", end = "\"", close = true, newline = false, not_in = ["comment", "string"] },
     { start = "'", end = "'", close = true, newline = false, not_in = ["comment", "string"] },
     { start = "`", end = "`", close = true, newline = true, not_in = ["comment", "string"] },
-    { start = "/*", end = "*/", close = true, newline = true, not_in = ["comment", "string"] },
+    { start = "#[", end = " ]#", close = true, newline = true, not_in = ["string", "comment"] },
 ]
+
+collapsed_placeholder = " #[ ... ]# "
 tab_size = 2
 increase_indent_pattern = ":\\s*$|=\\s*$|^\\s*(if|else|elif|case|of|while|for|block|proc|func|method|iterator|macro|template|type|when)\\b"
 decrease_indent_pattern = "^\\s*(else|elif|of|except|finally)\\b"
