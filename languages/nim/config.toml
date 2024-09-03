@@ -1,7 +1,7 @@
 name = "Nim"
 code_fence_block_name = "nim"
 grammar = "nim"
-path_suffixes = ["nim", "nims", "nimble", "nim.cfg"]
+path_suffixes = ["nim"]
 
 
 autoclose_before = ";:.,=}])>"
