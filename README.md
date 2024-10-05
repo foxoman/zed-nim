@@ -4,9 +4,13 @@ Nim extension for Zed Editor v0.0.4
 - Tree-Sitter Support: https://github.com/alaviss/tree-sitter-nim
 - Language Server Support: https://github.com/nim-lang/langserver
 
-# Install,
-Nim support has been officially integrated into the Zed editor through this extension. To enable it, search for "Nim" in the Zed extensions and install it.
+# Install
 
+## Prerequisites
+Make sure to install [nimlangserver](https://github.com/nim-lang/langserver) before installing this extension
+
+## Editor
+Nim support has been officially integrated into the Zed editor through this extension. To enable it, search for "Nim" in the Zed extensions and install it.
 ![image](https://github.com/user-attachments/assets/11009e16-1c61-49a7-a9eb-77d3aaeb9724)
 
 
