@@ -46,6 +46,7 @@ Support for current file run, nimble run, nimble build, nimble test
 - Go to definition and type definition
 - Rename
 - Hover
+- Outline 
 
 # Formating Configuration
 
