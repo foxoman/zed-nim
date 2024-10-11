@@ -1,6 +1,6 @@
 [
   {
-    "label": "Run Current Nim File",
+    "label": "Run ${ZED_FILENAME}",
     "command": "nim",
     "args": ["c", "-r", "$ZED_FILE"],
     "use_new_terminal": false,
