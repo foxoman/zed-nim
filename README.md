@@ -1,5 +1,5 @@
 # zed-nim
-Nim extension for Zed Editor v0.0.4
+Nim extension for Zed Editor
 
 - Tree-Sitter Support: https://github.com/alaviss/tree-sitter-nim
 - Language Server Support: https://github.com/nim-lang/langserver
