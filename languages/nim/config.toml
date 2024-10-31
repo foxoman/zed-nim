@@ -19,7 +19,6 @@ tab_size = 2
 increase_indent_pattern = ":\\s*$|=\\s*$|^\\s*(if|else|elif|case|of|while|for|block|proc|func|method|iterator|macro|template|type|when)\\b"
 decrease_indent_pattern = "^\\s*(else|elif|of|except|finally)\\b"
 
-[overrides.element]
-line_comments = ["#"]
+line_comments = ["# ", "## "]
 block_comment = ["#[ ", " ]#"]
 comment_continuation = { insert = "# " }
