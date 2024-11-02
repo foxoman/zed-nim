@@ -4,7 +4,8 @@
     "command": "nim",
     "args": ["c", "-r", "$ZED_FILE"],
     "use_new_terminal": false,
-    "reveal": "always"
+    "reveal": "always",
+    "tags": ["nim-main"]
   },
     {
     "label": "Nimble Run",
@@ -26,5 +27,29 @@
     "args": ["test"],
     "use_new_terminal": false,
     "reveal": "always"
+  },
+  {
+    "label": "Unittest suite",
+    "command": "nim",
+    "args": ["c", "-r", "$ZED_FILE", "\"$ZED_CUSTOM_nim_suite::\""],
+    "use_new_terminal": false,
+    "reveal": "always",
+    "tags": ["nim-unittest"]
+  },
+  {
+    "label": "Unittest single test",
+    "command": "nim",
+    "args": ["c", "-r", "$ZED_FILE", "\"$ZED_CUSTOM_nim_test\""],
+    "use_new_terminal": false,
+    "reveal": "always",
+    "tags": ["nim-unittest-single"]
+  },
+  {
+    "label": "Unittest test in suite",
+    "command": "nim",
+    "args": ["c", "-r", "$ZED_FILE", "\"$ZED_CUSTOM_nim_suite::$ZED_CUSTOM_nim_test\""],
+    "use_new_terminal": false,
+    "reveal": "always",
+    "tags": ["nim-unittest-suite"]
   }
 ]
