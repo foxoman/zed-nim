@@ -28,47 +28,10 @@
 ; sql in generalized_strings
 ; and anything you like as long as the function name is the same as the injected language's parser
 
-; TODO: this doesn't work dynamically, must be a workaround
-; (generalized_string
-;   function: (identifier) @injection.language
-;   (string_content) @content
-;   (#not-any-of? @injection.language "re" "rex" "fmt"))
-
-; SQL, HTML, CSS, XML, GLSL and Markdown
 (generalized_string
-  function: (identifier) @_string_prefix
-  .
+  function: (identifier) @language
   (string_content) @content
-  (#set! "language" "sql")
-  (#eq? @_string_prefix "sql"))
-
-(generalized_string
-  function: (identifier) @_string_prefix
-  .
-  (string_content) @content
-  (#set! "language" "html")
-  (#eq? @_string_prefix "html"))
-
-(generalized_string
-  function: (identifier) @_string_prefix
-  .
-  (string_content) @content
-  (#set! "language" "css")
-  (#eq? @_string_prefix "css"))
-
-(generalized_string
-  function: (identifier) @_string_prefix
-  .
-  (string_content) @content
-  (#set! "language" "xml")
-  (#eq? @_string_prefix "xml"))
-
-(generalized_string
-  function: (identifier) @_string_prefix
-  .
-  (string_content) @content
-  (#set! "language" "glsl")
-  (#eq? @_string_prefix "glsl"))
+  (#not-any-of? @language "re" "rex" "fmt" "md"))
 
 (generalized_string
   function: (identifier) @_string_prefix
@@ -90,8 +53,7 @@
 ; {.emit: "<javascript code>".}
 ; normal strings
 ((comment
-  (comment_content) @_language
-  (#eq? @_language "cpp"))
+  (comment_content) @language)
   .
   (pragma_statement
     (pragma_list
@@ -99,47 +61,7 @@
         left: (identifier) @_emit_keyword
         (#eq? @_emit_keyword "emit")
         right: (_
-          (string_content) @content))))
-  (#set! "language" "cpp"))
-
-((comment
-  (comment_content) @_language
-  (#eq? @_language "c"))
-  .
-  (pragma_statement
-    (pragma_list
-      (colon_expression
-        left: (identifier) @_emit_keyword
-        (#eq? @_emit_keyword "emit")
-        right: (_
-          (string_content) @content))))
-  (#set! "language" "c"))
-
-((comment
-  (comment_content) @_language
-  (#eq? @_language "objc"))
-  .
-  (pragma_statement
-    (pragma_list
-      (colon_expression
-        left: (identifier) @_emit_keyword
-        (#eq? @_emit_keyword "emit")
-        right: (_
-          (string_content) @content))))
-  (#set! "language" "objc"))
-
-((comment
-  (comment_content) @_language
-  (#eq? @_language "javascript"))
-  .
-  (pragma_statement
-    (pragma_list
-      (colon_expression
-        left: (identifier) @_emit_keyword
-        (#eq? @_emit_keyword "emit")
-        right: (_
-          (string_content) @content))))
-  (#set! "language" "javascript"))
+          (string_content) @content)))))
 
 
 ; =============================================================================
