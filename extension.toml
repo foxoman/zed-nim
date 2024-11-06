@@ -1,6 +1,6 @@
 id = "nim"
 name = "Nim"
-version = "0.0.5"
+version = "0.1.0"
 schema_version = 1
 authors = ["Foxoman <sultan@foxoman.net>"]
 description = "Nim support"
