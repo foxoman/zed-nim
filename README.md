@@ -66,8 +66,8 @@ To use nph as a formatter, add this to your settings
 ```
 
 ## To-Do List for Project:
-- Fix Project Config options
-- Add runnable functionality
-- Implement Debug Task
-- Develop Macros
-- Create code snippets
+- [ ] Fix Project Config options
+- [x] Add runnable functionality
+- [ ] Implement Debug Task
+- [ ] Develop Macros
+- [ ] Create code snippets

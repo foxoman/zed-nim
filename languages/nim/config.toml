@@ -1,11 +1,12 @@
 name = "Nim"
 code_fence_block_name = "nim"
 grammar = "nim"
-path_suffixes = ["nim"]
+path_suffixes = ["nim", "nims"]
 autoclose_before = ";:.,=}])>"
 
 brackets = [
     { start = "{", end = "}", close = true, newline = true },
+    { start = "{.", end = ".", close = true, newline = true, not_in = ["string", "comment"] },
     { start = "[", end = "]", close = true, newline = true },
     { start = "(", end = ")", close = true, newline = true },
     { start = "\"", end = "\"", close = true, newline = false, not_in = ["comment", "string"] },
