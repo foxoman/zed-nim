@@ -46,11 +46,11 @@ Support for current file run, nimble run, nimble build, nimble test
 - Go to definition and type definition
 - Rename
 - Hover
-- Outline 
+- Outline
 
 # Formating Configuration
 
-To use nph as a formatter, add this to your settings 
+To use nph as a formatter, add this to your settings
 
 ```
   "languages": {
@@ -77,8 +77,8 @@ To change settings of the nimlangserver add the following to your settings. List
         "timeout": 10000,
         "projectMapping": [
           {
-            "projectFile": "tests/all.nim",
-            "fileRegex": "tests/.*.nim"
+            "projectFile": "tests/all\.nim",
+            "fileRegex": "tests/.*\.nim"
           }
         ],
         "maxNimsuggestProcesses": 1,
