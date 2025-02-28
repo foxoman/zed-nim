@@ -65,6 +65,29 @@ To use nph as a formatter, add this to your settings
   }
 ```
 
+# Language Server Configuration
+
+To change settings of the nimlangserver add the following to your settings. List of options can be found in nimlangserver's [description](https://github.com/nim-lang/langserver?tab=readme-ov-file#configuration-options).
+
+```
+  "lsp": {
+    "nim": {
+      "settings": {
+        // Add your settings here:
+        "timeout": 10000,
+        "projectMapping": [
+          {
+            "projectFile": "tests/all.nim",
+            "fileRegex": "tests/.*.nim"
+          }
+        ],
+        "maxNimsuggestProcesses": 1,
+        "notificationVerbosity": "warning"
+      }
+    }
+  }
+```
+
 ## To-Do List for Project:
 - [ ] Fix Project Config options
 - [x] Add runnable functionality
