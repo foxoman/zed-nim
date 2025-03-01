@@ -1,5 +1,10 @@
 use zed::settings::LspSettings;
-use zed_extension_api::{self as zed, Result};
+use zed_extension_api::{
+    self as zed,
+    lsp::{Completion, CompletionKind},
+    CodeLabel, CodeLabelSpan, LanguageServerId, Result,
+};
+
 struct NimExtension {}
 
 impl zed::Extension for NimExtension {
@@ -54,6 +59,240 @@ impl zed::Extension for NimExtension {
         Ok(Some(zed::serde_json::json!({
             "nim": settings
         })))
+    }
+
+    fn label_for_completion(
+        &self,
+        _language_server_id: &LanguageServerId,
+        completion: Completion,
+    ) -> Option<CodeLabel> {
+        match completion.kind? {
+            CompletionKind::Function
+            | CompletionKind::Snippet
+            | CompletionKind::Method
+            | CompletionKind::Keyword
+            | CompletionKind::Property => {
+                let detail = completion.detail?;
+
+                let decl = match &detail {
+                    s if s.starts_with("proc") => "proc ",
+                    s if s.starts_with("template") => "template ",
+                    s if s.starts_with("iterator") => "iterator ",
+                    s if s.starts_with("converter") => "converter ",
+                    s if s.starts_with("func") => "func ", // TODO: is this ever being called?
+                    s if s.starts_with("macro") => "macro",
+                    _ => "",
+                };
+                let decl_len = decl.len();
+
+                // Parse the function signature from detail
+                if !detail.starts_with("macro") {
+                    // Extract the function signature and return type
+                    let signature_end = detail.rfind("{.").unwrap_or(detail.len());
+                    let signature = &detail[decl_len..signature_end];
+
+                    // Split into parts: "(): string"
+                    let parts: Vec<&str> = signature.rsplitn(2, ')').collect();
+                    if parts.len() >= 2 {
+                        let params = parts[1].to_string() + ")"; // "():"
+                        let return_type = parts[0].trim().to_string(); // "string"
+
+                        let code = format!("{decl}{}{}{}", completion.label, params, return_type);
+                        let code_len = code.len();
+
+                        return Some(CodeLabel {
+                            code,
+                            spans: vec![
+                                CodeLabelSpan::code_range(
+                                    decl_len..decl_len + completion.label.len(),
+                                ),
+                                CodeLabelSpan::code_range(
+                                    decl_len + completion.label.len()
+                                        ..decl_len + completion.label.len() + params.len(),
+                                ),
+                                CodeLabelSpan::code_range(
+                                    decl_len + completion.label.len() + params.len()..code_len,
+                                ),
+                            ],
+                            filter_range: (0..completion.label.len()).into(),
+                        });
+                    }
+                } else {
+                    let code = format!("macro {}", completion.label);
+                    let code_len = code.len();
+
+                    return Some(CodeLabel {
+                        code,
+                        spans: vec![
+                            CodeLabelSpan::code_range(6..code_len),
+                            CodeLabelSpan::literal(" macro", Some("keyword".into())),
+                        ],
+                        filter_range: (0..completion.label.len()).into(),
+                    });
+                }
+
+                let code = format!("{decl}{}() = discard", completion.label);
+                let code_len = code.len();
+
+                Some(CodeLabel {
+                    code,
+                    spans: vec![CodeLabelSpan::code_range(decl_len..code_len - 10)],
+                    filter_range: (0..completion.label.len()).into(),
+                })
+            }
+            CompletionKind::Class => {
+                let detail = completion.detail?;
+                if detail.starts_with("type ") {
+                    let code = format!("type {} = object", completion.label);
+
+                    return Some(CodeLabel {
+                        code,
+                        spans: vec![
+                            CodeLabelSpan::code_range(5..5 + completion.label.len()),
+                            CodeLabelSpan::literal(" type", Some("keyword".into())),
+                        ],
+                        filter_range: (0..completion.label.len()).into(),
+                    });
+                }
+                None
+            }
+            CompletionKind::Value => {
+                let detail = completion.detail?;
+                let delimeter = if detail.starts_with("const") {
+                    ":"
+                } else {
+                    "of"
+                };
+                let decl_parts: Vec<&str> = detail.rsplitn(2, delimeter).collect();
+
+                if decl_parts.len() >= 2 {
+                    let value_type_parts: Vec<&str> =
+                        decl_parts[0].trim().rsplitn(2, "literal").collect();
+                    let has_literal: bool = value_type_parts.len() >= 2;
+
+                    if detail.starts_with("const") {
+                        if has_literal {
+                            let value_type = value_type_parts[1].trim();
+                            let value_literal = value_type_parts[0]
+                                .trim()
+                                .strip_prefix('(')?
+                                .strip_suffix(')')?;
+                            let code = format!("const {}: {}", completion.label, value_type);
+                            let code_len = code.len();
+
+                            return Some(CodeLabel {
+                                code,
+                                spans: vec![
+                                    CodeLabelSpan::code_range(6..code_len),
+                                    CodeLabelSpan::literal(" = ", Some("operator".into())),
+                                    CodeLabelSpan::literal(value_literal, Some("constant".into())),
+                                ],
+
+                                filter_range: (0..completion.label.len()).into(),
+                            });
+                        }
+                        let value_type = value_type_parts[0].trim();
+                        let code = format!("const {}: {}", completion.label, value_type);
+                        let code_len = code.len();
+
+                        return Some(CodeLabel {
+                            code,
+                            spans: vec![
+                                CodeLabelSpan::code_range(6..code_len),
+                                // CodeLabelSpan::literal(" const", Some("keyword".into())),
+                            ],
+
+                            filter_range: (0..completion.label.len()).into(),
+                        });
+                    } else {
+                        let value_type = value_type_parts[0].trim();
+                        let code = format!("let {}: {}", completion.label, value_type);
+                        let code_len = code.len();
+                        let var_kind = ": ";
+
+                        return Some(CodeLabel {
+                            code,
+                            spans: vec![
+                                CodeLabelSpan::code_range(4..4 + completion.label.len()),
+                                CodeLabelSpan::literal(var_kind, Some("keyword".into())),
+                                CodeLabelSpan::code_range(4 + completion.label.len() + 2..code_len),
+                            ],
+                            filter_range: (0..completion.label.len()).into(),
+                        });
+                    }
+                }
+                None
+            }
+            CompletionKind::Field => {
+                let detail = completion.detail?;
+                let decl_parts: Vec<&str> = detail.rsplitn(2, "of").collect();
+
+                if decl_parts.len() >= 2 {
+                    let field_type = decl_parts[0].trim();
+                    let code = format!("var {}: {}", completion.label, field_type);
+                    let code_len = code.len();
+                    let var_kind = ": var ";
+
+                    return Some(CodeLabel {
+                        code,
+                        spans: vec![
+                            CodeLabelSpan::code_range(4..4 + completion.label.len()),
+                            CodeLabelSpan::literal(var_kind, Some("keyword".into())),
+                            CodeLabelSpan::code_range(4 + completion.label.len() + 2..code_len),
+                        ],
+                        filter_range: (0..completion.label.len()).into(),
+                    });
+                }
+                None
+            }
+            CompletionKind::Variable => {
+                let detail = completion.detail?;
+                let decl_parts: Vec<&str> = detail.rsplitn(2, "of").collect();
+
+                if decl_parts.len() >= 2 {
+                    let field_type_parts: Vec<&str> = decl_parts[0].trim().splitn(2, ':').collect();
+                    let field_type = field_type_parts[0].trim();
+                    let code = format!(
+                        "var a: {}; for {} in []: discard",
+                        field_type, completion.label
+                    );
+                    let code_len = code.len();
+                    let var_kind = ": ";
+
+                    return Some(CodeLabel {
+                        code,
+                        spans: vec![
+                            CodeLabelSpan::code_range(7 + field_type.len() + 6..code_len - 15),
+                            CodeLabelSpan::literal(var_kind, Some("keyword".into())),
+                            CodeLabelSpan::code_range(7..7 + field_type.len()),
+                        ],
+                        filter_range: (0..completion.label.len()).into(),
+                    });
+                }
+                None
+            }
+            CompletionKind::Enum => {
+                let detail = completion.detail?;
+                let enum_type = detail.strip_prefix("enum ").unwrap_or("");
+                let code = format!("type {} = enum", enum_type);
+                // let code_len = code.len();
+
+                Some(CodeLabel {
+                    code,
+                    spans: vec![
+                        // CodeLabelSpan::code_range(5 + enum_type.len() + 11..code_len),
+                        CodeLabelSpan::literal(
+                            completion.label.clone(),
+                            Some("local.definition.enum".into()),
+                        ),
+                        CodeLabelSpan::literal(" enum ", Some("keyword".into())),
+                        CodeLabelSpan::code_range(5..5 + enum_type.len()),
+                    ],
+                    filter_range: (0..completion.label.len()).into(),
+                })
+            }
+            _ => None,
+        }
     }
 }
 
