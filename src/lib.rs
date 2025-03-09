@@ -73,20 +73,21 @@ impl zed::Extension for NimExtension {
             | CompletionKind::Keyword
             | CompletionKind::Property => {
                 let detail = completion.detail?;
+                let kws = vec!["proc", "template", "iterator", "converter"];
+                // Get the first word from the detail string
+                let first = detail.split_whitespace().next();
+                let is_keyword = first.map_or(false, |word| kws.contains(&word));
 
-                let decl = match &detail {
-                    s if s.starts_with("proc") => "proc ",
-                    s if s.starts_with("template") => "template ",
-                    s if s.starts_with("iterator") => "iterator ",
-                    s if s.starts_with("converter") => "converter ",
-                    s if s.starts_with("func") => "func ", // TODO: is this ever being called?
-                    s if s.starts_with("macro") => "macro",
-                    _ => "",
+                let decl = if is_keyword {
+                    format!("{} ", first.unwrap())
+                } else {
+                    detail.clone()
                 };
                 let decl_len = decl.len();
 
                 // Parse the function signature from detail
-                if !detail.starts_with("macro") {
+                if is_keyword {
+                    // if !detail.starts_with("macro") {
                     // Extract the function signature and return type
                     let signature_end = detail.rfind("{.").unwrap_or(detail.len());
                     let signature = &detail[decl_len..signature_end];
@@ -118,17 +119,31 @@ impl zed::Extension for NimExtension {
                         });
                     }
                 } else {
-                    let code = format!("macro {}", completion.label);
-                    let code_len = code.len();
+                    // Macros
+                    if decl.starts_with("macro") {
+                        let code = format!("macro {}", completion.label);
+                        let code_len = code.len();
 
-                    return Some(CodeLabel {
-                        code,
-                        spans: vec![
-                            CodeLabelSpan::code_range(6..code_len),
-                            CodeLabelSpan::literal(" macro", Some("keyword".into())),
-                        ],
-                        filter_range: (0..completion.label.len()).into(),
-                    });
+                        return Some(CodeLabel {
+                            code,
+                            spans: vec![
+                                CodeLabelSpan::code_range(6..code_len),
+                                CodeLabelSpan::literal(" macro", Some("keyword".into())),
+                            ],
+                            filter_range: (0..completion.label.len()).into(),
+                        });
+                    } else {
+                        // Object fields
+                        // For some reason both converters and object fields are kind 10 (Property)
+                        let code = format!("var {}: {}", completion.label, decl);
+                        let code_len = code.len();
+
+                        return Some(CodeLabel {
+                            code,
+                            spans: vec![CodeLabelSpan::code_range(4..code_len)],
+                            filter_range: (0..completion.label.len()).into(),
+                        });
+                    }
                 }
 
                 let code = format!("{decl}{}() = discard", completion.label);
@@ -183,7 +198,11 @@ impl zed::Extension for NimExtension {
                             return Some(CodeLabel {
                                 code,
                                 spans: vec![
-                                    CodeLabelSpan::code_range(6..code_len),
+                                    CodeLabelSpan::code_range(6..6 + completion.label.len()),
+                                    CodeLabelSpan::literal(": const ", Some("keyword".into())),
+                                    CodeLabelSpan::code_range(
+                                        6 + completion.label.len() + 2..code_len,
+                                    ),
                                     CodeLabelSpan::literal(" = ", Some("operator".into())),
                                     CodeLabelSpan::literal(value_literal, Some("constant".into())),
                                 ],
@@ -198,8 +217,9 @@ impl zed::Extension for NimExtension {
                         return Some(CodeLabel {
                             code,
                             spans: vec![
-                                CodeLabelSpan::code_range(6..code_len),
-                                // CodeLabelSpan::literal(" const", Some("keyword".into())),
+                                CodeLabelSpan::code_range(6..6 + completion.label.len()),
+                                CodeLabelSpan::literal(": const ", Some("keyword".into())),
+                                CodeLabelSpan::code_range(6 + completion.label.len() + 2..code_len),
                             ],
 
                             filter_range: (0..completion.label.len()).into(),
@@ -208,13 +228,12 @@ impl zed::Extension for NimExtension {
                         let value_type = value_type_parts[0].trim();
                         let code = format!("let {}: {}", completion.label, value_type);
                         let code_len = code.len();
-                        let var_kind = ": ";
 
                         return Some(CodeLabel {
                             code,
                             spans: vec![
                                 CodeLabelSpan::code_range(4..4 + completion.label.len()),
-                                CodeLabelSpan::literal(var_kind, Some("keyword".into())),
+                                CodeLabelSpan::literal(": let ", Some("keyword".into())),
                                 CodeLabelSpan::code_range(4 + completion.label.len() + 2..code_len),
                             ],
                             filter_range: (0..completion.label.len()).into(),
@@ -231,13 +250,12 @@ impl zed::Extension for NimExtension {
                     let field_type = decl_parts[0].trim();
                     let code = format!("var {}: {}", completion.label, field_type);
                     let code_len = code.len();
-                    let var_kind = ": var ";
 
                     return Some(CodeLabel {
                         code,
                         spans: vec![
                             CodeLabelSpan::code_range(4..4 + completion.label.len()),
-                            CodeLabelSpan::literal(var_kind, Some("keyword".into())),
+                            CodeLabelSpan::literal(": var ", Some("keyword".into())),
                             CodeLabelSpan::code_range(4 + completion.label.len() + 2..code_len),
                         ],
                         filter_range: (0..completion.label.len()).into(),
@@ -257,13 +275,12 @@ impl zed::Extension for NimExtension {
                         field_type, completion.label
                     );
                     let code_len = code.len();
-                    let var_kind = ": ";
 
                     return Some(CodeLabel {
                         code,
                         spans: vec![
                             CodeLabelSpan::code_range(7 + field_type.len() + 6..code_len - 15),
-                            CodeLabelSpan::literal(var_kind, Some("keyword".into())),
+                            CodeLabelSpan::literal(": ", Some("keyword".into())),
                             CodeLabelSpan::code_range(7..7 + field_type.len()),
                         ],
                         filter_range: (0..completion.label.len()).into(),
@@ -275,12 +292,10 @@ impl zed::Extension for NimExtension {
                 let detail = completion.detail?;
                 let enum_type = detail.strip_prefix("enum ").unwrap_or("");
                 let code = format!("type {} = enum", enum_type);
-                // let code_len = code.len();
 
                 Some(CodeLabel {
                     code,
                     spans: vec![
-                        // CodeLabelSpan::code_range(5 + enum_type.len() + 11..code_len),
                         CodeLabelSpan::literal(
                             completion.label.clone(),
                             Some("local.definition.enum".into()),
