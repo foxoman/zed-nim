@@ -77,8 +77,8 @@ To change settings of the nimlangserver add the following to your settings. List
         "timeout": 10000,
         "projectMapping": [
           {
-            "projectFile": "tests/all\.nim",
-            "fileRegex": "tests/.*\.nim"
+            "projectFile": "tests/all\\.nim",
+            "fileRegex": "tests/.*\\.nim"
           }
         ],
         "maxNimsuggestProcesses": 1,
