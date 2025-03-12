@@ -87,7 +87,6 @@ impl zed::Extension for NimExtension {
 
                 // Parse the function signature from detail
                 if is_keyword {
-                    // if !detail.starts_with("macro") {
                     // Extract the function signature and return type
                     let signature_end = detail.rfind("{.").unwrap_or(detail.len());
                     let signature = &detail[decl_len..signature_end];
@@ -100,6 +99,46 @@ impl zed::Extension for NimExtension {
 
                         let code = format!("{decl}{}{}{}", completion.label, params, return_type);
                         let code_len = code.len();
+
+                        // Templates and iterators are distictly highlighted from procs and converters
+                        // TODO: Maybe converters also need to be distinct?
+                        if decl.starts_with("template") {
+                            return Some(CodeLabel {
+                                code,
+                                spans: vec![
+                                    CodeLabelSpan::literal(
+                                        format!("{}", completion.label),
+                                        Some("constructor".into()), // Same as macros, but LSP provides params only for templates
+                                    ),
+                                    CodeLabelSpan::code_range(
+                                        decl_len + completion.label.len()
+                                            ..decl_len + completion.label.len() + params.len(),
+                                    ),
+                                    CodeLabelSpan::code_range(
+                                        decl_len + completion.label.len() + params.len()..code_len,
+                                    ),
+                                ],
+                                filter_range: (0..completion.label.len()).into(),
+                            });
+                        } else if decl.starts_with("iterator") {
+                            return Some(CodeLabel {
+                                code,
+                                spans: vec![
+                                    CodeLabelSpan::literal(
+                                        format!("{}", completion.label),
+                                        Some("string.escape".into()), // <- TODO: this is very contraversial, but most themes appear to not have that many colors
+                                    ),
+                                    CodeLabelSpan::code_range(
+                                        decl_len + completion.label.len()
+                                            ..decl_len + completion.label.len() + params.len(),
+                                    ),
+                                    CodeLabelSpan::code_range(
+                                        decl_len + completion.label.len() + params.len()..code_len,
+                                    ),
+                                ],
+                                filter_range: (0..completion.label.len()).into(),
+                            });
+                        }
 
                         return Some(CodeLabel {
                             code,
@@ -119,15 +158,16 @@ impl zed::Extension for NimExtension {
                         });
                     }
                 } else {
-                    // Macros
                     if decl.starts_with("macro") {
+                        // Macros
                         let code = format!("macro {}", completion.label);
-                        let code_len = code.len();
-
                         return Some(CodeLabel {
                             code,
                             spans: vec![
-                                CodeLabelSpan::code_range(6..code_len),
+                                CodeLabelSpan::literal(
+                                    format!("{}", completion.label),
+                                    Some("constructor".into()),
+                                ),
                                 CodeLabelSpan::literal(" macro", Some("keyword".into())),
                             ],
                             filter_range: (0..completion.label.len()).into(),
