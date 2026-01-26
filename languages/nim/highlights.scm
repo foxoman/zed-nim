@@ -57,11 +57,11 @@
 ; =============================================================================
 ; @comment.documentation ; comments documenting code
 (documentation_comment
-  "##" @comment.documentation)
+  "##" @comment.doc)
 
 (block_documentation_comment
-  "##[" @comment.documentation
-  "]##" @comment.documentation)
+  "##[" @comment.doc
+  "]##" @comment.doc)
 
 ; NOTE: leaving content uncaptured so markdown can be injected
 ; =============================================================================
@@ -926,5 +926,7 @@
   ; Comments
 (comment) @comment
 (block_comment) @comment
-(documentation_comment) @comment
-(block_documentation_comment) @comment
+
+(documentation_comment) @comment.doc
+
+(block_documentation_comment) @comment.doc
