@@ -132,10 +132,6 @@
   (generalized_string)
 ] @string
 
-; injections in generalized_strings
-(generalized_string
-  (string_content) @none)
-
 ; format string injection in normal strings with & prefix
 (prefix_expression
   operator: (operator) @_string_prefix
