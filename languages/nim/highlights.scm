@@ -155,7 +155,7 @@
 
 ; =============================================================================
 ; @character            ; character literals
-(char_literal) @character
+(char_literal) @string
 
 ; =============================================================================
 ; @boolean              ; boolean literals
