@@ -83,3 +83,16 @@
 (block_documentation_comment
   (comment_content) @content
   (#set! "language" "markdown"))
+
+; comment highlighting support
+((comment) @content
+    (#set! "language" "comment"))
+
+((block_comment) @content
+    (#set! "language" "comment"))
+
+((documentation_comment) @content
+    (#set! "language" "comment"))
+
+((block_documentation_comment) @content
+    (#set! "language" "comment"))
